@@ -1,10 +1,5 @@
 """Restaurant rating lister."""
 
-
-
-
-
-
 def restaurant_rating(filename):
 
     file = open(filename)
