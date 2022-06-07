@@ -49,6 +49,7 @@ const tradingCardData = [
   },
 ];
 
+// Component that passes through props ln 143
 function TradingCard(props) {
   return (
     <div className="card">
@@ -58,6 +59,55 @@ function TradingCard(props) {
     </div>
   );
 }
+
+
+function AddTradingCard(props) {
+  const [name, setName] = React.useState("");
+  const [skill, setSkill] = React.useState("");
+  function addNewCard() {
+    // TO BE IMPLEMENTED
+    // alert('trying to add new card');
+    fetch('/add-card', {
+      method:'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ "name": name, "skill": skill })
+      })
+        .then((response) => response.json())
+        .then((jsonResponse) => {
+          const cardAdded = jsonResponse.cardAdded;
+          props.addCard(cardAdded); //calling function see ln 122 and passing in card added
+        });
+  }
+  return (
+    <React.Fragment>
+      <h2>Add New Trading Card</h2>
+      <label htmlFor="nameInput">Name</label>
+      <input
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        id="nameInput"
+        style={{ marginLeft: "5px" }}
+      ></input>
+      <label
+        htmlFor="skillInput"
+        style={{ marginLeft: "10px", marginRight: "5px" }}
+      >
+        Skill
+      </label>
+      <input
+        value={skill}
+        onChange={(event) => setSkill(event.target.value)}
+        id="skillInput"
+      ></input>
+      <button style={{ marginLeft: "10px" }} onClick={addNewCard}>
+        Add
+      </button>
+    </React.Fragment>
+  );
+}
+
 
 function TradingCardContainer() {
   
@@ -71,7 +121,7 @@ function TradingCardContainer() {
 
   function addCard(newCard) {
     // [...cards] makes a copy of cards. Similar to currentCards = cards[:] in Python
-    const currentCards = [...cards];
+    const currentCards = [...cards]; 
     // [...currentCards, newCard] is an array containing all elements in currentCards followed by newCard
     setCards([...currentCards, newCard]);
   }
@@ -105,58 +155,9 @@ function TradingCardContainer() {
 
   return (
     <React.Fragment>
-      <AddTradingCard />
+      <AddTradingCard addCard={addCard}/>
       <h2>Trading Cards</h2>
       <div className="grid">{tradingCards}</div>
-    </React.Fragment>
-  );
-}
-
-
-
-function AddTradingCard(props) {
-  const [name, setName] = React.useState("");
-  const [skill, setSkill] = React.useState("");
-  function addNewCard() {
-    // TO BE IMPLEMENTED
-    // alert('trying to add new card');
-    fetch('/add-card', {
-      method:'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ "name": name, "skill": skill })
-      })
-        .then((response) => response.json())
-        .then((jsonResponse) => {
-          const cardAdded = jsonResponse.cardAdded;
-          props.addCard(cardAdded);
-        });
-  }
-  return (
-    <React.Fragment>
-      <h2>Add New Trading Card</h2>
-      <label htmlFor="nameInput">Name</label>
-      <input
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        id="nameInput"
-        style={{ marginLeft: "5px" }}
-      ></input>
-      <label
-        htmlFor="skillInput"
-        style={{ marginLeft: "10px", marginRight: "5px" }}
-      >
-        Skill
-      </label>
-      <input
-        value={skill}
-        onChange={(event) => setSkill(event.target.value)}
-        id="skillInput"
-      ></input>
-      <button style={{ marginLeft: "10px" }} onClick={addNewCard}>
-        Add
-      </button>
     </React.Fragment>
   );
 }
